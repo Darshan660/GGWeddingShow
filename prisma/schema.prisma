@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Event {
+  id        String     @id @default(cuid())
+  name      String
+  createdAt DateTime   @default(now())
+  questions Question[]
+  guests    Guest[]
+}
+
+model Question {
+  id            String   @id @default(cuid())
+  eventId       String
+  event         Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  text          String
+  optionA       String
+  optionB       String
+  optionC       String
+  optionD       String
+  correctOption String
+  order         Int
+  answers       Answer[]
+}
+
+model Guest {
+  id          String   @id @default(cuid())
+  firstName   String
+  lastName    String
+  roomNumber  String
+  phoneNumber String?
+  eventId     String
+  event       Event    @relation(fields: [eventId], references: [id])
+  createdAt   DateTime @default(now())
+  answers     Answer[]
+  submitted   Boolean  @default(false)
+}
+
+model Answer {
+  id             String   @id @default(cuid())
+  guestId        String
+  guest          Guest    @relation(fields: [guestId], references: [id], onDelete: Cascade)
+  questionId     String
+  question       Question @relation(fields: [questionId], references: [id])
+  selectedOption String
+  isCorrect      Boolean
+}
