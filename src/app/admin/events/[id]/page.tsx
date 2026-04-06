@@ -28,6 +28,8 @@ export default function EventDetailPage() {
   const [results,    setResults]    = useState<ResultsData | null>(null);
   const [minCorrect, setMinCorrect] = useState(6);
   const [tab,        setTab]        = useState<"eligible"|"all">("eligible");
+  const [showDelete, setShowDelete] = useState(false);
+  const [deleting,   setDeleting]   = useState(false);
 
   useEffect(() => {
     fetch(`/api/admin/events/${id}`)
@@ -71,6 +73,12 @@ export default function EventDetailPage() {
 
   const downloadCSV = () => window.location.href = `/api/admin/events/${id}/download?minCorrect=${minCorrect}`;
 
+  const handleDelete = async () => {
+    setDeleting(true);
+    await fetch(`/api/admin/events/${id}`, { method: "DELETE" });
+    router.replace("/admin/dashboard");
+  };
+
   const maxDistVal = results
     ? Math.max(...Object.values(results.distribution).map(Number), 1)
     : 1;
@@ -92,10 +100,48 @@ export default function EventDetailPage() {
           <span className="font-display font-semibold text-sm truncate max-w-[12rem]"
             style={{ color:"var(--gold)" }}>{eventName || "Event Detail"}</span>
         </div>
-        <button onClick={downloadCSV} className="btn-gold text-xs px-4 py-2">
-          ⬇ CSV
-        </button>
+        <div className="flex items-center gap-3">
+          <button onClick={downloadCSV} className="btn-gold text-xs px-4 py-2">
+            ⬇ CSV
+          </button>
+          <button onClick={() => setShowDelete(true)}
+            className="text-xs px-4 py-2 rounded-xl font-semibold transition-all"
+            style={{ background:"rgba(180,30,30,0.15)", color:"#f87171", border:"1px solid rgba(180,30,30,0.35)" }}
+            onMouseEnter={e => (e.currentTarget.style.background = "rgba(180,30,30,0.28)")}
+            onMouseLeave={e => (e.currentTarget.style.background = "rgba(180,30,30,0.15)")}>
+            🗑 Delete
+          </button>
+        </div>
       </nav>
+
+      {/* Delete Confirmation Modal */}
+      {showDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ background:"rgba(0,0,0,0.75)", backdropFilter:"blur(6px)" }}>
+          <div className="glass-card-elevated p-8 max-w-sm w-full animate-scale-in text-center">
+            <div className="text-4xl mb-4">🗑</div>
+            <h3 className="font-display text-xl font-bold mb-2" style={{ color:"var(--text-primary)" }}>
+              Delete Event?
+            </h3>
+            <p className="text-sm mb-6" style={{ color:"var(--text-muted)" }}>
+              This will permanently delete <span style={{ color:"var(--gold)" }}>{eventName}</span> along
+              with all registered guests and their answers. This cannot be undone.
+            </p>
+            <div className="flex gap-3">
+              <button onClick={() => setShowDelete(false)} disabled={deleting}
+                className="flex-1 py-3 rounded-xl text-sm font-semibold transition-all"
+                style={{ background:"rgba(255,255,255,0.06)", color:"var(--text-muted)", border:"1px solid rgba(255,255,255,0.1)" }}>
+                Cancel
+              </button>
+              <button onClick={handleDelete} disabled={deleting}
+                className="flex-1 py-3 rounded-xl text-sm font-semibold transition-all"
+                style={{ background: deleting ? "rgba(180,30,30,0.3)" : "rgba(180,30,30,0.8)", color:"#fff", border:"none" }}>
+                {deleting ? "Deleting…" : "Yes, Delete"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="max-w-4xl mx-auto px-4 pt-8 space-y-5">
 
