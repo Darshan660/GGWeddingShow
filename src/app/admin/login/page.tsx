@@ -49,7 +49,7 @@ export default function AdminLoginPage() {
           <img
             src="/logo.png"
             alt="GaminGaza"
-            className="mx-auto mb-4 animate-float select-none"
+            className="mx-auto mb-4 select-none"
             style={{
               width: "80px",
               height: "80px",

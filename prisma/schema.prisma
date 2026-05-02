@@ -36,7 +36,7 @@ model Guest {
   roomNumber  String
   phoneNumber String?
   eventId     String
-  event       Event    @relation(fields: [eventId], references: [id])
+  event       Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
   answers     Answer[]
   submitted   Boolean  @default(false)
@@ -47,7 +47,7 @@ model Answer {
   guestId        String
   guest          Guest    @relation(fields: [guestId], references: [id], onDelete: Cascade)
   questionId     String
-  question       Question @relation(fields: [questionId], references: [id])
+  question       Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
   selectedOption String
   isCorrect      Boolean
 }
