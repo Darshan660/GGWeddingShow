@@ -29,6 +29,31 @@ export async function GET(
   return NextResponse.json({ ...event, qrUrl })
 }
 
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const authError = requireAdminAuth(request)
+  if (authError) return authError
+
+  const { id } = await params
+  const { name, questions } = await request.json()
+
+  await prisma.event.update({ where: { id }, data: { name } })
+
+  for (const q of questions) {
+    await prisma.question.update({
+      where: { id: q.id },
+      data: {
+        text: q.text, optionA: q.optionA, optionB: q.optionB,
+        optionC: q.optionC, optionD: q.optionD, correctOption: q.correctOption,
+      },
+    })
+  }
+
+  return NextResponse.json({ success: true })
+}
+
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }

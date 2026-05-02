@@ -77,7 +77,7 @@ export default function LandingPage() {
           <img
             src="/logo.png"
             alt="GaminGaza"
-            className="animate-float select-none"
+            className="select-none"
             style={{
               width: "96px",
               height: "96px",
@@ -107,7 +107,7 @@ export default function LandingPage() {
             GaminGaza
           </h1>
           <p className="font-display text-xl italic" style={{ color: "rgba(245,240,232,0.65)" }}>
-            Wedding Game Show
+            Love Algorithm
           </p>
         </div>
 

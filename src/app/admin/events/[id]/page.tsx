@@ -101,6 +101,13 @@ export default function EventDetailPage() {
             style={{ color:"var(--gold)" }}>{eventName || "Event Detail"}</span>
         </div>
         <div className="flex items-center gap-3">
+          <button onClick={() => router.push(`/admin/events/${id}/edit`)}
+            className="text-xs px-4 py-2 rounded-xl font-semibold transition-all"
+            style={{ background:"rgba(201,168,76,0.12)", color:"var(--gold)", border:"1px solid rgba(201,168,76,0.3)" }}
+            onMouseEnter={e => (e.currentTarget.style.background = "rgba(201,168,76,0.22)")}
+            onMouseLeave={e => (e.currentTarget.style.background = "rgba(201,168,76,0.12)")}>
+            ✏ Edit
+          </button>
           <button onClick={downloadCSV} className="btn-gold text-xs px-4 py-2">
             ⬇ CSV
           </button>
